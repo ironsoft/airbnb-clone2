@@ -3,6 +3,7 @@ from django.forms import forms
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView, DetailView
+from django.core.paginator import Paginator
 from rooms.models import Amenity, Facility, Room, RoomType
 from . import forms
 
@@ -40,7 +41,6 @@ class SearchView(View):
             form = forms.SearchForm(request.GET)
 
             if form.is_valid():
-                print(form.cleaned_data)
                 s_city = form.cleaned_data.get("city")
                 s_country = form.cleaned_data.get("country")
                 s_room_type = form.cleaned_data.get("room_type")
@@ -85,18 +85,43 @@ class SearchView(View):
                 if is_superhost is True:
                     filter_args["host__superhost"] = True
 
+                rooms = Room.objects.filter(**filter_args)
+
                 for s_amenity in s_amenities:
-                    filter_args["amenities"] = s_amenity
+                    rooms = rooms.filter(amenities=s_amenity)
 
                 for s_facility in s_facilities:
-                    filter_args["facilities"] = s_facility
+                    rooms = rooms.filter(facilities=s_facility)
 
-                rooms = Room.objects.filter(**filter_args)
+                qs = rooms.order_by("-created")
+                paginator = Paginator(qs, 3, orphans=1)
+
+                page = request.GET.get("page")
+
+                rooms = paginator.get_page(page)
+
+                # current_url = request.get_full_path().split("&page=")
+                # print(current_url)
+
+                # current_url = "".join(request.get_full_path().split("page")[0])
+                # print(request.get_full_path().split("page")[0])
+                # print(current_url)
+
+                # current_url = "".join(request.get_full_path().split("page")[0])
+                # if current_url[-1] != "&":
+                #     current_url = (
+                #         "".join(request.get_full_path().split("page")[0]) + "&"
+                #     )
+                # print(current_url)
 
                 return render(
                     request,
                     "rooms/search.html",
-                    context={"form": form, "rooms": rooms},
+                    context={
+                        "form": form,
+                        "rooms": rooms,
+                        # "current_url": current_url,
+                    },
                 )
 
         form = forms.SearchForm()

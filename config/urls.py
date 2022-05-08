@@ -22,6 +22,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("core.urls", namespace="core")),
     path("rooms/", include("rooms.urls", namespace="rooms")),
+    path("users/", include("users.urls", namespace="users")),
 ]
 
 # 개발 모드에서만 적용하는 사진, 파일 등 MEDIA 파일들을 URL로 만들어 주기 위해 설정
