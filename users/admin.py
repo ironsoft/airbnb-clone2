@@ -22,6 +22,7 @@ class UserCustomAdmin(UserAdmin):
                     "superhost",
                     "email_verified",
                     "email_secret",
+                    "login_method",
                 )
             },
         ),
@@ -43,4 +44,5 @@ class UserCustomAdmin(UserAdmin):
         "superhost",
         "email_verified",
         "email_secret",
+        "login_method",
     )
