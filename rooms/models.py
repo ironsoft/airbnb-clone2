@@ -96,6 +96,7 @@ class Room(TimeStampedModel):
     def get_absolute_url(self):
         return reverse("rooms:detail", kwargs={"pk": self.pk})
 
+
     def total_rating(self):
         all_reviews = self.reviews.all()
         all_ratings = 0
@@ -106,6 +107,11 @@ class Room(TimeStampedModel):
                 return round(avg, 2)
         else:
             return 0
+    
+    def first_photo(self):
+        photo, = self.photos.all()[:1] 
+        # photo로 받으면 1개만 받아도 queryset으로 받기 때문에 한꺼풀 더 벗겨내야함. 그래서 python의 특성인 ,를 사용하면 배열안에 요소를 한씩 받아내기에 photo, 를 사용함.
+        return photo.image_file.url
 
     def save(self, *args, **kwargs):
         self.city = str.capitalize(self.city)

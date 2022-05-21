@@ -11,14 +11,16 @@ from . import forms
 class HomeView(ListView):
 
     model = Room
-    paginate_by = 10
+    paginate_by = 12
     paginate_orphans = 5
     ordering = "created"
     context_object_name = "rooms"
 
     def get_context_data(self, **kwargs):
         now = datetime.now()
+        all_rooms = Room.objects.all().count
         context = super().get_context_data(**kwargs)
+        context['all_rooms'] = all_rooms
         context["now"] = now
         return context
 

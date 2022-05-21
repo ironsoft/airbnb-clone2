@@ -1,15 +1,16 @@
-<a href="/">Nbnb</a>
-<ul>
-
+<ul class="flex items-center text-sm font-medium">
   {% if user.is_authenticated %}
-    <li>
+    <li class="ml-8">
       <a href="{% url 'users:logout' %}">Logout</a>
     </li>
   {% else %}
-    <li>
+    <li class="nav_link">
       <a href="{% url 'users:login' %}">Login</a>
     </li>
-    <a href="{% url 'users:signup' %}">Signup</a>
+    <li class="nav_link">
+      <a href="{% url 'users:signup' %}">Signup</a>
+    </li>
+
   {% endif %}
 
 </ul>

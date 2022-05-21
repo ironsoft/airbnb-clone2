@@ -1,36 +1,22 @@
 {% extends 'base.html' %}
 
 {% block title_name %}
-HOME
+  HOME
 {% endblock title_name %}
 
 {% block content %}
-{% for room in rooms %}
-<ul>
-    <a href="{% url 'rooms:detail' room.pk %}">
-        {{room.name}} / ${{room.price}}
-    </a>
-</ul>
-{% endfor %}
-
-<h5>
-
-    {% if page_obj.has_previous %}
-    <a href="?page={{page_obj.previous_page_number}}">Previous</a>
-    {% endif %}
-
-    Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}
-
-    {% if page_obj.has_next %}
-    <a href="?page={{page_obj.next_page_number}}">Next</a>
-    {% endif %}
-
-</h5>
-
-
-{% for page in page_obj.paginator.page_range %}
-<a href="?page={{page}}">{{page}}</a>
-{% endfor %}
-
+  <div class="container mx-auto">
+    <div class="h-50vh mx-5 rounded-xl mb-24 mt-32 bg-cover bg-center" style="background-image: url(https://images.unsplash.com/photo-1536315238512-4c8cebdaaf93?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop)"></div>
+    <!-- 노마드코더는 여기서 -mx-40을 주는데 이렇게 되면 화면 밖으로 나가버림 -->
+    <div class="container flex flex-wrap">
+      <!-- flex-wrap을 적용하려면 flex도 같이 해줘야함. -->
+      {% for room in rooms %}
+        {% include 'mixins/room_card.html' with room=room %}
+        <!-- 이 부분에서 한참헤맴 room=room이 붙어 있어야 하는데 자동 formatting 되어 한칸씩 떨어짐. 그럼 에러가 발생함. 그래서 파일형식을 django tempate에서 HTML로 변경하였음. 그러니깐 자동 포매팅 작동 안함. -->
+      {% endfor %}
+    </div>
+    <!-- <h5> {% if page_obj.has_previous %} <a href="?page={{page_obj.previous_page_number}}">Previous</a> {% endif %} Page {{page_obj.number}} of {{page_obj.paginator.num_pages}} {% if page_obj.has_next %} <a href="?page={{page_obj.next_page_number}}">Next</a> {% endif %} </h5> {% for page in page_obj.paginator.page_range %} <a href="?page={{page}}">{{page}}</a> {% endfor %} -->
+  </div>
+  {% include 'partials/pagination.html' %}
 
 {% endblock content %}
