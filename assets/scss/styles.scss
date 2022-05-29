@@ -18,12 +18,28 @@
     @apply border rounded-sm w-full text-center py-4;
 }
 
+.btn-link {
+    @apply py-3 text-center rounded-lg font-light text-lg w-full;
+}
+
 .auth_input {
     @apply border rounded-sm w-full py-4 px-5 text-left font-light border-gray-600;
     input {
         @apply w-full;
         &:focus {
             @apply outline-none border-blue-500;
+        }
+    }
+    textarea {
+        @apply w-full h-20;
+        &:focus {
+            @apply outline-none
+        }
+    }
+    select {
+        @apply w-full h-5;
+        &:focus {
+            @apply outline-none
         }
     }
     &.has_error {
@@ -34,5 +50,41 @@
     }
 }
 
+
+@keyframes messageFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    5% {
+        opacity: 1;
+        transform: translateY(50px);
+    }
+    95% {
+        opacity: 1;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+}
+
+
+.message {
+    animation: messageFadeIn 5s ease-in-out forwards;
+    &.error {
+        @apply bg-red-600;
+    }
+    &.info {
+        @apply bg-blue-500;
+    }
+    &.success {
+        @apply bg-green-500;
+    }
+    &.warning {
+        @apply bg-yellow-400;
+    }
+}
 
 @tailwind utilities;

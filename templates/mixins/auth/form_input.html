@@ -3,6 +3,7 @@
     <span class="text-red-700 text-sm font-medium">{{error}}</span>
   {% endfor %}
 {% endif %}
+
 <div class="auth_input {% if field.errors %}has_error{% endif %}  mb-2 flex justify-between">
   {{field}}
   {% if field == form.email %}

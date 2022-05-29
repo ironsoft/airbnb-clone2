@@ -1,6 +1,9 @@
 <ul class="flex items-center text-sm font-medium">
   {% if user.is_authenticated %}
-    <li class="ml-8">
+    <li class="nav_link">
+      <a href="{% url 'users:profile' user.pk %}">Profile</a>
+    </li>
+    <li class="nav_link">
       <a href="{% url 'users:logout' %}">Logout</a>
     </li>
   {% else %}

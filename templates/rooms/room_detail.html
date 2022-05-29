@@ -1,35 +1,36 @@
 {% extends 'base.html' %}
 
 {% block title_name %}
-{{room.name}}
+  {{room.name}}
 {% endblock title_name %}
 
 {% block content %}
-<div>
-    <h2>{{object.name}} - ${{room.price}}</h2>
-    <h4>host: {{room.host.username}}
-        {% if room.host.superhost %}
+  <div>
+    <h2>{{object.name}}
+      - ${{room.price}}</h2>
+    <h4>host:
+      <a href="{{room.host.get_absolute_url}}">{{room.host.username}}</a>
+      {% if room.host.superhost %}
         (superhost)
-        {% endif %}
-        / rating: {{room.total_rating}}
+      {% endif %}
+      / rating:
+      {{room.total_rating}}
     </h4>
     <p>{{room.description}}</p>
-</div>
-<div>
+  </div>
+  <div>
     <h3>Amenities</h3>
     {% for a in room.amenities.all %}
-    <li>{{a}}</li>
+      <li>{{a}}</li>
     {% endfor %}
     <h3>Facilities</h3>
     {% for f in room.facilities.all %}
-    <li>{{f}}</li>
+      <li>{{f}}</li>
     {% endfor %}
-</div>
+  </div>
 
-
-
-{% for room_photo in room.photos.all  %}
-<img width="200px" src="{{room_photo.image_file.url}}" alt="">
-{% endfor %}
+  {% for room_photo in room.photos.all %}
+    <img width="200px" src="{{room_photo.image_file.url}}" alt="">
+  {% endfor %}
 
 {% endblock content %}
