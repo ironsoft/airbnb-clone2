@@ -1,3 +1,4 @@
+{% load i18n %}
 <footer class="p-4 mt-5 mb-5 border-t bg-white rounded-lg md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800">
   <div class="flex items-center">
     <a href="https://ishopfloor.com" class="flex items-center mb-4 sm:mb-0">
@@ -11,16 +12,24 @@
 
   <ul class="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
     <li>
-      <a href="#" class="mr-4 hover:underline md:mr-6 ">About</a>
+      <a href="#" class="mr-4 hover:underline md:mr-6 ">{% trans "About" %}</a>
     </li>
     <li>
-      <a href="#" class="mr-4 hover:underline md:mr-6">Privacy Policy</a>
+      <a href="#" class="mr-4 hover:underline md:mr-6">{% trans "Privacy Policy" %}</a>
     </li>
     <li>
-      <a href="#" class="mr-4 hover:underline md:mr-6">Licensing</a>
+      <a href="#" class="mr-4 hover:underline md:mr-6">{% trans "Licensing" %}</a>
     </li>
     <li>
-      <a href="#" class="hover:underline">Contact</a>
+      <a href="#" class="hover:underline">{% trans "Contact" %}</a>
     </li>
   </ul>
+  <div>
+    {% get_current_language as LANGUAGE_CODE %}
+    <select id="language" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+      <option>Choose a language</option>
+      <option value="en" {% if LANGUAGE_CODE == 'en' %} selected="selected" {% endif %}>English</option>
+      <option value="ko" {% if LANGUAGE_CODE == 'ko' %} selected="selected" {% endif %}>한국어</option>
+    </select>
+  </div>
 </footer>

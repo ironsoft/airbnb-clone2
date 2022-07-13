@@ -1,5 +1,26 @@
 <ul class="flex items-center text-sm font-medium">
   {% if user.is_authenticated %}
+    {% if request.session.is_hosting %}
+      <li class="nav_link">
+        <a href="{% url 'rooms:upload-room' %}">
+          Upload Room
+        </a>
+      </li>
+      <li class="nav_link">
+        <a href="{% url 'users:switch_hosting' %}">
+          Stop hosting
+        </a>
+      </li>
+    {% else %}
+      <li class="nav_link">
+        <a href="{% url 'users:switch_hosting' %}">
+          Start hosting
+        </a>
+      </li>
+    {% endif %}
+    <li class="nav_link">
+      <a href="{% url 'lists:see-favs' %}">Favs ({{user.list.rooms.count}})</a>
+    </li>
     <li class="nav_link">
       <a href="{% url 'users:profile' user.pk %}">Profile</a>
     </li>

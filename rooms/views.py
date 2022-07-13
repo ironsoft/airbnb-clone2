@@ -1,10 +1,16 @@
 from datetime import datetime
 from django.forms import forms
-from django.shortcuts import render
+from django.http import Http404
+from django.shortcuts import render, redirect, reverse
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, UpdateView, FormView, CreateView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from rooms.models import Amenity, Facility, Room, RoomType
+from rooms.models import Amenity, Facility, Photo, Room, RoomType
+from django.contrib import messages
+from users import mixins as user_mixins
 from . import forms
 
 
@@ -102,20 +108,6 @@ class SearchView(View):
 
                 rooms = paginator.get_page(page)
 
-                # current_url = request.get_full_path().split("&page=")
-                # print(current_url)
-
-                # current_url = "".join(request.get_full_path().split("page")[0])
-                # print(request.get_full_path().split("page")[0])
-                # print(current_url)
-
-                # current_url = "".join(request.get_full_path().split("page")[0])
-                # if current_url[-1] != "&":
-                #     current_url = (
-                #         "".join(request.get_full_path().split("page")[0]) + "&"
-                #     )
-                # print(current_url)
-
                 return render(
                     request,
                     "rooms/search.html",
@@ -137,83 +129,115 @@ class SearchView(View):
         )
 
 
-# def search(request):
-#     city = request.GET.get("city", "Anywhere")
-#     city = str.capitalize(city)
-#     s_country = request.GET.get("country", "KR")
-#     s_room_type = int(request.GET.get("room_type", 0))
-#     s_price = int(request.GET.get("price", 0))
-#     s_guests = int(request.GET.get("guests", 0))
-#     s_beds = int(request.GET.get("beds", 0))
-#     s_bedrooms = int(request.GET.get("bedrooms", 0))
-#     s_baths = int(request.GET.get("baths", 0))
-#     s_amenities = request.GET.getlist("amenities")  # 복수를 받을 때는 getlist를 써야함.
-#     s_facilities = request.GET.getlist("facilities")  # 복수를 받을 때는 getlist를 써야함.
-#     is_superhost = bool(request.GET.get("superhost", False))
-#     is_instant_book = bool(request.GET.get("instant_book", False))
-#     room_types = RoomType.objects.all()
-#     amenities = Amenity.objects.all()
-#     facilities = Facility.objects.all()
+class EditRoomView(user_mixins.LoggedInOnlyView, UpdateView):
 
-#     form = {
-#         "city": city,
-#         "s_country": s_country,
-#         "s_room_type": s_room_type,
-#         "s_price": s_price,
-#         "s_guests": s_guests,
-#         "s_beds": s_beds,
-#         "s_bedrooms": s_bedrooms,
-#         "s_baths": s_baths,
-#         "s_amenities": s_amenities,
-#         "s_facilities": s_facilities,
-#         "is_superhost": is_superhost,
-#         "is_instant_book": is_instant_book,
-#     }
+    model = Room
+    fields = (
+        "name",
+        "description",
+        "country",
+        "city",
+        "price",
+        "address",
+        "guests",
+        "beds",
+        "bedrooms",
+        "baths",
+        "check_in",
+        "check_out",
+        "instant_book",
+        "room_type",
+        "amenities",
+        "facilities",
+        "house_rules",
+    )
+    pk_url_kwarg = 'pk'
+    template_name = "rooms/edit_room.html"
 
-#     choices = {
-#         "room_types": room_types,
-#         "countries": countries,
-#         "amenities": amenities,
-#         "facilities": facilities,
-#     }
+    def get_object(self, queryset=None):
+        room = super().get_object(queryset)
+        if room.host.pk != self.request.user.pk:
+            raise Http404()
+        return room
 
-#     filter_args = {}
-#     if city != "Anywhere":
-#         filter_args["city__startswith"] = city
+class RoomPhotoView(user_mixins.LoggedInOnlyView, DetailView):
 
-#     filter_args["country"] = s_country
+    model = Room
+    template_name = "rooms/room_photos.html"
+    pk_url_kwarg = 'pk'
 
-#     if s_room_type != 0:
-#         filter_args["room_type__pk"] = s_room_type
+    def get_object(self, queryset=None):
+        room = super().get_object(queryset)
+        if room.host.pk != self.request.user.pk:
+            raise Http404()
+        return room
 
-#     if s_price != 0:
-#         filter_args["price__lte"] = s_price
+@login_required
+def delete_photo(request, room_pk, photo_pk):
+    user = request.user
+    try:
+        # 실제 룸이 있는지 확인한다. 없으면 에러가 발생하기 때문에 try~ except~ 로 작성한다. 
+        # 이 룸의 호스트와 로그인한 사람이 같은지 확인한다. 
+        # 같으면 photo_pk 의 포토를 모델에서 찾아서 삭제한다. 
+        # 그리고 다시 포토 페이지로 돌려 보낸다. 
+        # 다르면 삭제할 권한이 없다는 메세지를 보낸다. 
+        room = Room.objects.get(pk=room_pk)
+        if room.host.pk == user.pk:
+            photo = Photo.objects.filter(pk=photo_pk)
+            photo.delete()
+            messages.success(request, "Photo Deleted!")
+        else:
+            messages.error(request, "You are not authorized!")
+        
+        return redirect(reverse('rooms:photos', kwargs={"pk":room_pk}))
+            
+    except Room.DoesNotExist:
+        return redirect(reverse('core:home'))
 
-#     if s_guests != 0:
-#         filter_args["guests__gte"] = s_guests
 
-#     if s_beds != 0:
-#         filter_args["beds__gte"] = s_beds
+class EditPhotoView(user_mixins.LoggedInOnlyView, SuccessMessageMixin, UpdateView):
 
-#     if s_bedrooms != 0:
-#         filter_args["bedrooms__gte"] = s_bedrooms
+    model = Photo
+    fields = ("caption", "image_file",)
+    template_name = "rooms/edit_photo.html"
+    pk_url_kwarg = 'photo_pk'
+    success_message = "Photo Updated"
 
-#     if s_baths != 0:
-#         filter_args["baths__gte"] = s_baths
+    def get_success_url(self) -> str:
+        room_pk = self.kwargs.get("room_pk")
+        return reverse("rooms:photos", kwargs={"pk":room_pk})
 
-#     print(s_amenities)
-#     if len(s_amenities) > 0:
-#         for s_amenity in s_amenities:
-#             filter_args["amenities__pk"] = int(s_amenity)
 
-#     if len(s_facilities) > 0:
-#         for s_facility in s_facilities:
-#             filter_args["facilities__pk"] = int(s_facility)
+class UploadPhotoView(user_mixins.LoggedInOnlyView, FormView):
 
-#     rooms = Room.objects.filter(**filter_args)
+    form_class = forms.UploadPhotoForm
+    template_name = "rooms/upload_photo.html"
 
-#     return render(
-#         request,
-#         "rooms/search.html",
-#         context={**form, **choices, "rooms": rooms},
-#     )
+    def form_valid(self, form):
+        pk = self.kwargs.get("room_pk")
+        form.save(pk)
+        messages.success(self.request, "Photo Uploaded!")
+        return redirect(reverse("rooms:photos", kwargs={'pk':pk}))
+
+
+
+class UploadRoomView(user_mixins.LoggedInOnlyView, FormView):
+
+    form_class = forms.UploadRoomForm
+    template_name = "rooms/upload_room.html"
+
+    def form_valid(self, form):
+        room = form.save()
+        user = self.request.user
+        room.host = user
+        room.save()
+        form.save_m2m()
+        messages.success(self.request, "Room Uploaded!")
+        return redirect(reverse("rooms:detail", kwargs={'pk':room.pk}))
+
+def delete_room(request, pk):
+    user = request.user
+    room = Room.objects.get(pk=pk)
+    room.delete()
+    messages.success(request, "Room Deleted!")
+    return redirect(reverse("users:profile", kwargs={'pk':user.pk}))

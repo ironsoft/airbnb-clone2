@@ -1,33 +1,37 @@
 {% extends 'base.html' %}
 
 {% block title_name %}
-Search
+  Search
 {% endblock title_name %}
 
 {% block search-bar %}{% endblock search-bar %}
 
 {% block content %}
 
-<h2>Search</h2>
-<form action="{% url 'rooms:search' %}" method="get">
-    {{form.as_p}}
-    <button>Search</button>
-</form>
-<h2>Searching Results</h2>
-{% for room in rooms %}
-<h3>{{room.name}}</h3>
-{% endfor %}
+  <div class="container mx-auto">
+    <h2>Search</h2>
+    <form action="{% url 'rooms:search' %}" method="get">
+      {{form.as_p}}
+      <button>Search</button>
+    </form>
+    <h2>Searching Results</h2>
+    {% for room in rooms %}
+      <h3>{{room.name}}</h3>
+    {% endfor %}
 
-{% if rooms.has_previous %}
-<a href="{{request.get_full_path}}&page={{rooms.previous_page_number}}">Previous</a>
-{% endif %}
+    {% if rooms.has_previous %}
+      <a href="{{request.get_full_path}}&page={{rooms.previous_page_number}}">Previous</a>
+    {% endif %}
 
-Page {{rooms.number}} of {{rooms.paginator.num_pages}}
+    Page
+    {{rooms.number}}
+    of
+    {{rooms.paginator.num_pages}}
 
+    {% if rooms.has_next %}
+      <a href="{{request.get_full_path}}&page={{rooms.next_page_number}}">Next</a>
+    {% endif %}
 
-{% if rooms.has_next %}
-<a href="{{request.get_full_path}}&page={{rooms.next_page_number}}">Next</a>
-{% endif %}
-
+  </div>
 
 {% endblock content %}

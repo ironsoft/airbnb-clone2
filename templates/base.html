@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,12 +19,13 @@
         <a class="mr-6" href="{% url 'core:home' %}">
           <img class="w-8" src="{% static 'img/airbnb-logo.png' %}" alt="">
         </a>
+        <!-- 서치바 부분 -->
         {% block search-bar %}
           <form class="box-shadow border w-2/3 flex items-center px-4 py-2 shadow-md hover:shadow-lg rounded-sm" action="{% url 'rooms:search' %}" method="GET">
             <svg class="h-6 w-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
-            <input class="border-none ml-2 w-full focus:outline-none" type="text" name="city" placeholder="Search"/>
+            <input class="border-none ml-2 w-full focus:outline-none" type="text" name="city" placeholder="{% trans 'Search' %}"/>
           </form>
         {% endblock search-bar %}
       </div>
@@ -33,5 +34,18 @@
     {% block content %}{% endblock content %}
 
     {% include 'partials/footer.html'%}
+    <script>
+      const langSelect = document.querySelector("#language")
+      const handleLangChange = () => {
+        const selected = langSelect.value
+        // ... 이부분에서 장고로 가서 세션값을 변경시켜줌
+        // fetch 함수는 브라우저에서 바로 REST 방식으로 요청함. 여기서는 GET 방식으로 요청.  
+        // fetch 함수 안에 url 인자 줄때 백틱 사용하는 것 잊지 말기.
+        fetch(`{% url 'users:switch_language' %}?lang=${selected}`).then(
+          () => window.location.reload() // 창을 리프레쉬 시켜줌. 
+        ) 
+      }
+      langSelect.addEventListener("change", handleLangChange)
+    </script>
 
   </html>

@@ -1,0 +1,146 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-09 07:28+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: templates/base.html:28
+msgid "Search"
+msgstr "어디를 갈 예정이세요?"
+
+#: templates/partials/footer.html:15
+msgid "About"
+msgstr "우리는?"
+
+#: templates/partials/footer.html:18
+msgid "Privacy Policy"
+msgstr "개인정보정책"
+
+#: templates/partials/footer.html:21
+msgid "Licensing"
+msgstr "라이센스"
+
+#: templates/partials/footer.html:24
+msgid "Contact"
+msgstr "연락은 여기로"
+
+#: templates/partials/pagination.html:16
+#, python-format
+msgid ""
+"\n"
+"        Showing\n"
+"        <span class=\"font-medium\">1</span>\n"
+"        to\n"
+"        <span class=\"font-medium\">%(current_page_number)s</span>\n"
+"        of\n"
+"        <span class=\"font-medium\">%(all_rooms_count)s</span>\n"
+"        results\n"
+"        "
+msgstr ""
+"\n"
+"        전체 페이지수는 \n"
+"        <span class=\"font-medium\">1</span>\n"
+"        페이지부터\n"
+"        <span class=\"font-medium\">%(current_page_number)s</span>\n"
+"        페이지까지 그리고 전체 룸의 수는\n"
+"        <span class=\"font-medium\">%(all_rooms_count)s</span>\n"
+"        개\n"
+"        "
+
+#: templates/rooms/room_detail.html:37
+msgid "Save to Favorites"
+msgstr "즐겨찾기 추가"
+
+#: users/mixins.py:12 users/mixins.py:21
+msgid "Can't go there!"
+msgstr "그렇게 접속할 수 없습니다."
+
+#: users/models.py:21
+msgid "Male"
+msgstr "남자"
+
+#: users/models.py:22
+msgid "Female"
+msgstr "여자"
+
+#: users/models.py:23
+msgid "Other"
+msgstr "기타"
+
+#: users/models.py:30
+msgid "English"
+msgstr "영어"
+
+#: users/models.py:31
+msgid "Korean"
+msgstr "한국어"
+
+#: users/models.py:47
+msgid "Email"
+msgstr "이메일"
+
+#: users/models.py:48
+msgid "Github"
+msgstr "깃헙"
+
+#: users/models.py:49
+msgid "Kakao"
+msgstr "카카오"
+
+#: users/models.py:52
+msgid "avatar"
+msgstr "프로필 사진"
+
+#: users/models.py:53
+msgid "gender"
+msgstr "성별"
+
+#: users/models.py:54
+msgid "bio"
+msgstr "자기소개"
+
+#: users/models.py:55
+msgid "birthdate"
+msgstr "생일"
+
+#: users/models.py:56
+msgid "language"
+msgstr "언어"
+
+#: users/models.py:57
+msgid "currency"
+msgstr "통화"
+
+#: users/models.py:58
+msgid "superhost"
+msgstr "슈퍼호스트"
+
+#: users/models.py:59
+msgid "email_verified"
+msgstr "이메일 확인여부"
+
+#: users/models.py:60
+msgid "email_secret"
+msgstr "이메일확인 생성암호"
+
+#: users/models.py:61
+msgid "login_method"
+msgstr "로그인 방법"
+
+#: users/models.py:75
+msgid "Verify airbnb Account"
+msgstr "에어비앤비 계정확인."

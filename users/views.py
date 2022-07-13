@@ -1,6 +1,7 @@
 import os
 import requests
 from django.forms import forms
+from django.utils import translation
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
@@ -12,6 +13,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.views import PasswordChangeView
 from django.core.files.base import ContentFile
 from django.contrib import messages
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from . import forms, models, mixins
 
@@ -268,3 +271,22 @@ class UpdatePasswordView(mixins.LoggedInOnlyView, mixins.EmailLoginOnlyView, Pas
     def get_success_url(self) -> str:
         messages.success(self.request, "Password Changed Successfully!")
         return self.request.user.get_absolute_url()
+
+
+@login_required
+def switch_hosting(request):
+    try:
+        del request.session["is_hosting"]
+    except KeyError:
+        request.session["is_hosting"] = True
+    return redirect(reverse('core:home'))
+
+
+def switch_language(request):
+    lang = request.GET.get("lang", None)
+    if lang is not None:
+        translation.activate(lang)
+        response = HttpResponse(status=200) 
+        response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
+        return response
+    

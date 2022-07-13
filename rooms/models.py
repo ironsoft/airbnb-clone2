@@ -1,8 +1,9 @@
+from django.utils import timezone
 from django.db import models
 from django.urls import reverse
 from django_countries.fields import CountryField
 from core.models import TimeStampedModel
-
+from cal import Calendar
 
 class AbstractItem(TimeStampedModel):
 
@@ -108,11 +109,31 @@ class Room(TimeStampedModel):
         else:
             return 0
     
-    def first_photo(self):
-        photo, = self.photos.all()[:1] 
-        # photo로 받으면 1개만 받아도 queryset으로 받기 때문에 한꺼풀 더 벗겨내야함. 그래서 python의 특성인 ,를 사용하면 배열안에 요소를 한씩 받아내기에 photo, 를 사용함.
-        return photo.image_file.url
-
     def save(self, *args, **kwargs):
         self.city = str.capitalize(self.city)
         super().save(*args, **kwargs)  # Call the real save() method
+    
+    def first_photo(self):
+        try:
+            photo, = self.photos.all()[:1] 
+            # photo로 받으면 1개만 받아도 queryset으로 받기 때문에 한꺼풀 더 벗겨내야함. 그래서 python의 특성인 ,를 사용하면 배열안에 요소를 한씩 받아내기에 photo, 를 사용함.
+            return photo.image_file.url
+        except ValueError:
+            return None
+
+    def get_next_four_photos(self):
+        photos = self.photos.all()[1:5]
+        return photos
+
+    def get_calendar(self):
+        now = timezone.now()
+        currentYear = now.year
+        nextYear = currentYear
+        currentMonth = now.month
+        nextMonth = currentMonth + 1
+        if nextMonth == 13: # 만약 다음달이 13월이 되면 해가 바뀐다는 뜻이므로.
+            nextMonth = 1
+            nextYear = nextYear + 1
+        this_month = Calendar(currentYear, currentMonth)
+        next_month = Calendar(nextYear, nextMonth)
+        return [this_month, next_month]

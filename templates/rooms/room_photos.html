@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title_name %}
+  Edit Room
+{% endblock title_name %}
+
+{% block search-bar %}{% endblock search-bar %}
+
+{% block content %}
+  <div class="container mx-auto my-10 flex flex-col">
+
+    <div class="my-3 h-20">
+      <a href="{% url 'rooms:upload-photo' room.pk %}" class="w-1/6 block btn-link bg-rose-500 text-white">Upload Photo</a>
+    </div>
+
+    {% for photo in room.photos.all %}
+      <div class="mb-5 border p-6 border-gray-400 flex justify-between">
+        <!-- 왼쪽 사진부분 -->
+        <div class="flex items-start">
+          <img src="{{photo.image_file.url}}" class="w-32 h-32"/>
+          <span class="ml-5 text-xl">{{photo.caption}}</span>
+        </div>
+        <!-- 오른쪽 버튼 부분 -->
+        <div class="flex flex-col w-1/5">
+          <a class="btn-link bg-blue-600 mb-5 text-white" href="{% url 'rooms:edit-photo' room.pk photo.pk %}">Edit</a>
+          <a class="btn-link bg-red-600 text-white" href="{% url 'rooms:delete-photo' room.pk photo.pk %}">Delete</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock content %}

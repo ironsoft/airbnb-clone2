@@ -65,6 +65,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -160,3 +161,13 @@ EMAIL_PORT = "587"
 EMAIL_HOST_USER = os.environ.get("MAILGUN_USERNAME")
 EMAIL_HOST_PASSWORD = os.environ.get("MAILGUN_PASSWORD")
 EMAIL_FROM = "no_reply@sandboxbe42d5bd53eb4cdbb1611c2b77d2f07c.mailgun.org"
+
+
+# Auth 
+# @login_required에서 로그인 하지 않은 사람 돌려 보낼 url 설정.
+LOGIN_URL = "/users/login/" 
+
+# Locale
+LOCALE_PATHS = (BASE_DIR / "locale",) # 튜플 형식이 되어야 함. 
+LANGUAGE_CODE = "en"
+LANGUAGE_COOKIE_NAME = "django_language"

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title_name %}
+  Reservation {{reservation.check_in}}
+  Profile
+{% endblock title_name %}
+
+{% block search-bar %}{% endblock search-bar %}
+
+{% block content %}
+  <div class="container mx-auto my-10 flex flex-col">
+    <!-- 상단사진 -->
+    <a href="{% url 'reservations:list' reservation.room.pk %}" class="text-right mb-2 underline hover:text-blue-500"> Return to Reservation List</a>
+    <div class="bg-cover bg-center h-96 rounded-lg" style="background-image: url({{reservation.room.first_photo}});"></div>
+    
+    <!-- 하단 예약 내용 -->
+    <div class="flex flex-col items-center">
+      <div class="font-medium text-xl border-b py-8 px-5 w-full">
+        <!-- get_status_display 는 DB에서 보여주는 값을 가져올 수 있도록 한다. get_absolute_url 같이 외워두면 좋을듯 -->
+        {{reservation.check_in}} - {{reservation.check_out}}
+        <!-- 상태에 따라 다른 칼라로 보이도록 함 -->
+        <span class="ml-2  
+        {% if reservation.status == 'pending' %}
+        text-yellow-600
+        {% elif reservation.status == 'confirmed' %}
+        text-blue-500
+        {% else %}
+        text-gray-500
+        {% endif %}
+        ">{{reservation.get_status_display}}</span>
+      </div>
+      <!-- 룸이름 -->
+      <span class="text-2xl p-5 mt-2 w-full">
+        {{reservation.room.name}}
+      </span>
+      <!-- 룸 호스트에 대한 정보 -->
+      <div class="flex border-b w-full py-5">
+        <!-- 아바타 부분 -->
+        <div class="flex flex-col items-center">
+          <a href="{{reservation.room.host.get_absolute_url}}" class="flex flex-col items-center">
+            {% include 'mixins/user_avatar.html' with user_obj=reservation.room.host %}
+            <span class="mt-2 text-gray-500 text-center">{{reservation.room.host.first_name}}</span>
+          </a>
+        </div>
+       <!-- 아바타 오른쪽 부분 -->
+        <div class="ml-5 flex flex-col">
+          <span class="font-medium mb-px">Contact your Airbnb Host</span>
+          <!-- 호스트에 메세지 보내기 -->
+          <a href="{% url 'conversations:go-conversation' reservation.room.host.pk reservation.guest.pk %}" class="font-medium text-blue-500">Send a Message</a>
+         <div class="flex">
+           <!-- 예약 상태가 펜딩이면 취소가 가능하도록 설정 -->
+          {% if reservation.status == 'pending' %}
+          <div class="mt-1 ml-0">
+            <a href="{% url 'reservations:edit' reservation.pk 'cancel' %}" class="border py-1 text-center rounded-lg bg-red-500 text-white block px-3">Cancel Reservation</a>
+          </div>  
+          <!-- 만약 접속한 사람이 룸의 호스트이면 컨펌을 해 주도록 설정 -->
+            {% if reservation.room.host == user %}
+              <div class="mt-1 ml-2">
+                <a href="{% url 'reservations:edit' reservation.pk 'confirm' %}" class="border py-1 text-center rounded-lg bg-blue-500 text-white block px-3">Confirm Reservation</a>
+              </div>  
+            {% endif %}
+          {% endif %}
+         </div>     
+        </div>
+      </div>
+    </div>
+    <!-- 만약 예약이 컨펌되고, 기간이 지나가 버리면 폼이 나타난다. -->
+    {% if reservation.status == 'confirmed' and reservation.is_finished %}
+    <span class=" font-medium text-xl p-2 mt-5">Write your Review</span>
+    <form action="{% url 'reviews:create' reservation.pk reservation.room.pk %}" method="POST" class="border w-1/2">
+      {% csrf_token %}
+      {% include 'mixins/room/room_form.html' with form=form cta="Submit" %}
+    </form>
+    {% endif %}
+  </div>
+{% endblock content %}
