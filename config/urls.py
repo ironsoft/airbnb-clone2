@@ -18,6 +18,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("core.urls", namespace="core")),
@@ -27,6 +30,7 @@ urlpatterns = [
     path("lists/", include("lists.urls", namespace="lists")),
     path("conversations/", include("conversations.urls", namespace="conversations")),
     path("users/", include("users.urls", namespace="users")),
+    path('sentry-debug/', trigger_error),
 ]
 
 # 개발 모드에서만 적용하는 사진, 파일 등 MEDIA 파일들을 URL로 만들어 주기 위해 설정
