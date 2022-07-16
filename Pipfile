@@ -13,6 +13,8 @@ requests = "*"
 django = "==3.2.13"
 pipenv-to-requirements = "*"
 sentry-sdk = "*"
+django-storages = "*"
+boto3 = "*"
 
 [dev-packages]
 flake8 = "*"
