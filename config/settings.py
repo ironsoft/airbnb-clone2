@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DEBUG"))
 
-ALLOWED_HOSTS = [".elasticbeanstalk.com", "localhost"]
+ALLOWED_HOSTS = [".elasticbeanstalk.com", "localhost", "127.0.0.1"]
 
 # Application definition
 
@@ -200,6 +200,8 @@ if not DEBUG:
     AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
 
+    # 이 속성을 지정해 주면 사용자의 브라우저가 캐싱을 하게 되어 로딩속도가 빨라짐. 
+    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
     # AWS_S3_CUSTOM_DOMAIN는 아래 STATIC_URL을 구성하기 위해 미리 만든 환경변수임.
     AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com"
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
