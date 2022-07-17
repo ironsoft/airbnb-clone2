@@ -1,8 +1,8 @@
-{% load i18n %}
+{% load i18n static %}
 <footer class="p-4 mt-5 mb-5 border-t bg-white rounded-lg md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800">
   <div class="flex items-center">
     <a href="https://ishopfloor.com" class="flex items-center mb-4 sm:mb-0">
-      <img src="/static/img/ishopfloor_logo.jpeg" class="mr-3 h-8" alt="ishopfloor Logo">
+      <img src="{% static 'img/ishopfloor_logo.jpeg' %}" class="mr-3 h-8" alt="ishopfloor Logo">
       <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"></span>
     </a>
     <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2022
