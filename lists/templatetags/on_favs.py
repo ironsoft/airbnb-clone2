@@ -17,7 +17,7 @@ def on_favs(context, room):
 
     # 에러난 부분 새로운 코드로 작성
     try:
-        the_list = list_models.List.objects.get_or_none(
+        the_list = list_models.List.objects.get(
         user=user,
         name="My Favorites Houses",
         )
